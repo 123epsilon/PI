@@ -5,7 +5,7 @@ from functools import partial
 from typing import Union, List, Tuple
 
 
-from pi import Tensor, dtype, empty
+from pi import Tensor, dtype, randn
 import pi
 
 
@@ -27,7 +27,7 @@ class Uninitialized(partial):
             if inspect.isfunction(func) or isinstance(func, functools.partial):
                 args = args[1:]
             else:
-                func = empty
+                func = randn
 
             if isinstance(args[0], (tuple, list)):
                 assert len(args) == 1, f"unknown len args {args}"
@@ -61,7 +61,7 @@ class Uninitialized(partial):
         # this is a little hack to make the numpy factory functions
         # in mlir/utils.py work
         args = (*self.args, *args)
-        return self.func(args, **keywords)
+        return self.func(*args, **keywords)
 
 
 class UninitializedParameter(Uninitialized):

@@ -130,16 +130,25 @@ def _elementsAttr(x, context=None):
 def _np_wrapper(*args, factory=None, **kwargs):
     if "device" in kwargs:
         kwargs.pop("device")
-    if "dtype" in kwargs and isinstance(kwargs["dtype"], dtype):
-        kwargs["dtype"] = kwargs["dtype"].to_np_type()
+    if "dtype" in kwargs:
+        if isinstance(kwargs["dtype"], dtype):
+            kwargs["dtype"] = kwargs["dtype"].to_np_type()
+        elif kwargs["dtype"] is None:
+            kwargs.pop("dtype")
+        else:
+            raise ValueError(f"unknown dtype {dtype=}")
     return torch_dialect.NonValueTensorLiteralOp(factory(*args, **kwargs))
 
 
 empty = functools.partial(_np_wrapper, factory=np.empty)
 ones = functools.partial(_np_wrapper, factory=np.ones)
 zeros = functools.partial(_np_wrapper, factory=np.zeros)
-rand = functools.partial(_np_wrapper, factory=np.random.rand)
-randn = functools.partial(_np_wrapper, factory=np.random.randn)
+rand = functools.partial(
+    _np_wrapper, factory=lambda *args, **_kwargs: np.random.rand(*args)
+)
+randn = functools.partial(
+    _np_wrapper, factory=lambda *args, **_kwargs: np.random.randn(*args)
+)
 tensor = functools.partial(_np_wrapper, factory=np.array)
 zeros_like = functools.partial(_np_wrapper, factory=np.zeros_like)
 empty_like = functools.partial(_np_wrapper, factory=np.empty_like)
