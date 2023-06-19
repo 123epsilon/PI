@@ -2279,6 +2279,9 @@ c.def("tile", [](PyAnyTorchTensorValue& self, py::args args, py::kwargs kwargs) 
 // aten::to.prim_Device : (Tensor, Device?, int?, bool, bool) -> (Tensor)
 c.def("to", [](const PyAnyTorchTensorValue &self, const PyAnyTorchOptionalDeviceValue &device, const PyAnyTorchOptionalIntValue &dtype, const PyTorch_BoolValue &non_blocking, const PyTorch_BoolValue &copy) -> PyAnyTorchTensorValue { return to(self, device, dtype, non_blocking, copy); }, "device"_a = py::none(), "dtype"_a = py::none(), "non_blocking"_a = false, "copy"_a = false);
 
+// aten::to.dtype : (Tensor, int, bool, bool, int?) -> (Tensor)
+c.def("to", [](const PyAnyTorchTensorValue &self, const PyTorch_IntValue &dtype, const PyTorch_BoolValue &non_blocking, const PyTorch_BoolValue &copy, const PyAnyTorchOptionalIntValue &memory_format) -> PyAnyTorchTensorValue { return to(self, dtype, non_blocking, copy, memory_format); }, "dtype"_a = py::none(), "non_blocking"_a = false, "copy"_a = false, "memory_format"_a = py::none());
+
 // to_dense(self, dtype Optional[_dtype]=None, *, masked_grad Optional[_bool]=None) -> Tensor
 c.def("to_dense", [](PyAnyTorchTensorValue& self, py::args args, py::kwargs kwargs) { throw NotImplementedError("NotImplementedError: to_dense with signature to_dense(self, dtype Optional[_dtype]=None, *, masked_grad Optional[_bool]=None) -> Tensor"); });
 
